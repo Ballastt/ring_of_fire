@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Game } from 'src/models/game';
 
 @Component({
   selector: 'app-game',
@@ -7,8 +8,21 @@ import { Component } from '@angular/core';
 })
 export class GameComponent {
   pickCardAnimation = false;
+  currentCard: string | undefined = '';
+  game: Game = new Game();
+
+  ngOnInit(): void {
+    this.newGame();
+  }
+
+  newGame() {
+    this.game = new Game();
+    console.log(this.game);
+  }
 
   pickCard() {
+    this.currentCard = this.game.stack.pop();
+    console.log(this.currentCard)
     this.pickCardAnimation = true; 
   }
 }
