@@ -1,3 +1,14 @@
+
+
+
+<app-player
+  *ngFor="let player of game.players; let i = index"
+  [ngStyle]="{ 'top.px': 100 + i * 130 }"
+  [name]="player"
+  class="player-position"
+  
+></app-player>
+
 <div class="gameSpace">
   <div class="card-stack">
     <img
@@ -6,20 +17,20 @@
       src="/assets/img/card_cover.webp"
       alt="card cover"
     />
-        <img
-        (click)="pickCard()"
-        class="top-card"
-        style="right: 25px"
-        src="/assets/img/card_cover.webp"
-        alt="card cover"
-        />
-        <img
-        (click)="pickCard()"
-        *ngIf="pickCardAnimation"
-        class="pick-card"
-        style="right: 25px"
-        src="/assets/img/cards/{{ currentCard }}.png"
-        alt="card cover"
-        />
+    <img
+      (click)="pickCard()"
+      class="top-card"
+      style="right: 25px"
+      src="/assets/img/card_cover.webp"
+      alt="card cover"
+    />
+    <img
+      (click)="pickCard()"
+      *ngIf="pickCardAnimation"
+      class="pick-card"
+      style="right: 25px"
+      src="/assets/img/cards/{{ currentCard }}.png"
+      alt="card cover"
+    />
   </div>
 </div>
