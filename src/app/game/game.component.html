@@ -1,16 +1,14 @@
-
-
-
 <app-player
   *ngFor="let player of game.players; let i = index"
-  [ngStyle]="{ 'top.px': 100 + i * 130 }"
+  [ngStyle]="{ 'top.px': 100 + i * 90 }"
   [name]="player"
+  [playerActive]="i == game.currentPlayer"
   class="player-position"
-  
 ></app-player>
 
 <div class="gameSpace">
   <div class="card-stack">
+    <!-- Card stack-->
     <img
       [ngStyle]="{ 'right.px': i * 5 }"
       *ngFor="let card of [0, 1, 2, 3]; let i = index"
@@ -24,6 +22,8 @@
       src="/assets/img/card_cover.webp"
       alt="card cover"
     />
+
+    <!--Current card plus animation-->
     <img
       (click)="pickCard()"
       *ngIf="pickCardAnimation"
@@ -34,3 +34,9 @@
     />
   </div>
 </div>
+
+<app-game-description class="pin-bottom"></app-game-description>
+
+<button mat-fab color="accent" class="add-btn" (click)="openDialog()">
+  <mat-icon>add</mat-icon>
+</button>
