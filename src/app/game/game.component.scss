@@ -31,6 +31,10 @@
   }
 }
 
+.played-card {
+  transform: scale(1) translateX(184px) translateY(-250px) rotate(10deg);
+}
+
 .pick-card {
   transition: all 105ms ease-in-out;
   animation: pick-card-animation 1s ease-in-out;
@@ -44,7 +48,7 @@
   40% {
     transform: scale(1.7);
   }
-  0% {
+  60% {
     transform: scale(1.7);
   }
   100% {

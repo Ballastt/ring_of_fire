@@ -8,5 +8,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button mat-button (click)="onNoClick()">No Thanks</button>
-  <button mat-flat-button color="primary" [mat-dialog-close]="name">Ok</button>
+  <button mat-flat-button color="primary" [disabled]="name.length == 0"  [mat-dialog-close]="name">Ok</button>
 </mat-dialog-actions>

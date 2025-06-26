@@ -23,10 +23,20 @@
       alt="card cover"
     />
 
+    <!-- Stack for played cards -->
+    <ng-container *ngIf="!pickCardAnimation">
+      <img
+        *ngFor="let card of game.playedCards"
+        class="played-card"
+        style="right: 25px"
+        src="./assets/img/cards/{{ card }}.png"
+      />
+    </ng-container>
+
     <!--Current card plus animation-->
     <img
       (click)="pickCard()"
-      *ngIf="pickCardAnimation"
+      *ngIf="pickCardAnimation && currentCard"
       class="pick-card"
       style="right: 25px"
       src="/assets/img/cards/{{ currentCard }}.png"
@@ -35,7 +45,10 @@
   </div>
 </div>
 
-<app-game-description class="pin-bottom"></app-game-description>
+<app-game-description
+  [card]="currentCard"
+  class="pin-bottom"
+></app-game-description>
 
 <button mat-fab color="accent" class="add-btn" (click)="openDialog()">
   <mat-icon>add</mat-icon>

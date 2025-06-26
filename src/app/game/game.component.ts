@@ -28,12 +28,17 @@ export class GameComponent {
     if (!this.pickCardAnimation) {
       this.currentCard = this.game.stack.pop();
       this.pickCardAnimation = true;
-      console.log('New card:', this.currentCard);
-      console.log('This game: ', this.game)
+
+      this.game.currentPlayer++;
+      this.game.currentPlayer =
+        this.game.currentPlayer % this.game.players.length;
 
       setTimeout(() => {
+        if (this.currentCard) {
+          this.game.playedCards.push(this.currentCard);
+        }
         this.pickCardAnimation = false;
-      }, 1500);
+      }, 2000);
     }
   }
 
@@ -41,9 +46,11 @@ export class GameComponent {
     const dialogRef = this.dialog.open(MyDialogComponent);
 
     dialogRef.afterClosed().subscribe((name: string) => {
-      this.game.players.push(name);
-      console.log('Dialog wurde geschlossen mit:', name);
-      // Hier kannst du was mit "result" machen
+      if (name && name.length > 0) {
+        this.game.players.push(name);
+        console.log('Dialog wurde geschlossen mit:', name);
+        // Hier kannst du was mit "result" machen
+      }
     });
   }
 }
