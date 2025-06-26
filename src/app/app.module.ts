@@ -6,17 +6,38 @@ import { StartScreenComponent } from './start-screen/start-screen.component';
 import { AppRoutingModule } from './app-routing.module';
 import { GameComponent } from './game/game.component';
 import { PlayerComponent } from './player/player.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MyDialogComponent } from './my-dialog/my-dialog.component';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { GameDescriptionComponent } from './game-description/game-description.component';
+import { MatCardModule } from '@angular/material/card';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     StartScreenComponent,
     GameComponent,
-    PlayerComponent
+    PlayerComponent,
+    MyDialogComponent,
+    GameDescriptionComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent]
