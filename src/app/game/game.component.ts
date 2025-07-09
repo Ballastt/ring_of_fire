@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Game } from 'src/models/game';
 import { MatDialog } from '@angular/material/dialog';
 import { MyDialogComponent } from '../my-dialog/my-dialog.component';
-import { Firestore, collectionData, collection } from '@angular/fire/firestore';
+import { Firestore, collectionData, collection, addDoc, Query } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 
@@ -16,31 +16,33 @@ export class GameComponent {
   currentCard: string | undefined = '';
   game: Game = new Game();
 
-  // 🔥 Observable für Firestore-Daten
-  games$: Observable<any[]>;
+  games$!: Observable<any[]>;
 
-  constructor(private firestore: Firestore, public dialog: MatDialog) {
-    const gamesCollection = collection(this.firestore, 'games');
-    this.games$ = collectionData(gamesCollection, { idField: 'id' });
+  constructor(private firestore: Firestore, public dialog: MatDialog) {}
+
+  ngOnInit() {
+    console.log('Firestore instance:', this.firestore);
+    console.log('ngOnInit wurde aufgerufen');
+
+    const gamesRef = collection(this.firestore, 'games');
+    this.games$ = collectionData(gamesRef, { idField: 'id' });
 
     this.games$.subscribe((games) => {
-      console.log('Spiele aus Firestore:', games);
-    });
-  }
-
-
-  ngOnInit(): void {
-    this.newGame();
-
-     // 🔍 Ausgabe zur Kontrolle
-    this.games$.subscribe((games) => {
-      console.log('Spiele aus Firestore:', games);
+      console.log('Spiele aus Firestore:', games); // ✅ Wird jetzt ausgeführt
     });
   }
 
   newGame() {
     this.game = new Game();
-    console.log(this.game);
+    const gameData = JSON.parse(JSON.stringify(this.game)); // wandelt in Plain Object um
+
+    addDoc(collection(this.firestore, 'games'), gameData)
+      .then((docRef) => {
+        console.log('Game erfolgreich gespeichert mit ID:', docRef.id);
+      })
+      .catch((error) => {
+        console.error('Fehler beim Speichern des Spiels:', error);
+      });
   }
 
   pickCard() {
