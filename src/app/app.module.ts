@@ -18,6 +18,20 @@ import { GameDescriptionComponent } from './game-description/game-description.co
 import { MatCardModule } from '@angular/material/card';
 
 
+
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { environment } from '../environments/environment';
+import { Firestore } from '@angular/fire/firestore';
+
+
+// Importiere Firebase-Module
+// import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+// import { provideAuth, getAuth } from '@angular/fire/auth';
+// import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+// import { environment } from '../environments/environments';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -25,7 +39,7 @@ import { MatCardModule } from '@angular/material/card';
     GameComponent,
     PlayerComponent,
     MyDialogComponent,
-    GameDescriptionComponent
+    GameDescriptionComponent,
   ],
   imports: [
     BrowserModule,
@@ -37,9 +51,13 @@ import { MatCardModule } from '@angular/material/card';
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatCardModule
+    MatCardModule,
+
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore()),
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

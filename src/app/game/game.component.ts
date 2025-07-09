@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { Game } from 'src/models/game';
 import { MatDialog } from '@angular/material/dialog';
 import { MyDialogComponent } from '../my-dialog/my-dialog.component';
+import { Firestore, collectionData, collection } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
+
 
 @Component({
   selector: 'app-game',
@@ -13,10 +16,26 @@ export class GameComponent {
   currentCard: string | undefined = '';
   game: Game = new Game();
 
-  constructor(public dialog: MatDialog) {}
+  // 🔥 Observable für Firestore-Daten
+  games$: Observable<any[]>;
+
+  constructor(private firestore: Firestore, public dialog: MatDialog) {
+    const gamesCollection = collection(this.firestore, 'games');
+    this.games$ = collectionData(gamesCollection, { idField: 'id' });
+
+    this.games$.subscribe((games) => {
+      console.log('Spiele aus Firestore:', games);
+    });
+  }
+
 
   ngOnInit(): void {
     this.newGame();
+
+     // 🔍 Ausgabe zur Kontrolle
+    this.games$.subscribe((games) => {
+      console.log('Spiele aus Firestore:', games);
+    });
   }
 
   newGame() {
