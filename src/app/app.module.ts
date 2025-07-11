@@ -17,19 +17,10 @@ import { MatInputModule } from '@angular/material/input';
 import { GameDescriptionComponent } from './game-description/game-description.component';
 import { MatCardModule } from '@angular/material/card';
 
-
-
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+
 import { environment } from '../environments/environment';
-
-
-// Importiere Firebase-Module
-// import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-// import { provideAuth, getAuth } from '@angular/fire/auth';
-// import { provideFirestore, getFirestore } from '@angular/fire/firestore';
-// import { environment } from '../environments/environments';
 
 @NgModule({
   declarations: [
@@ -52,8 +43,8 @@ import { environment } from '../environments/environment';
     MatInputModule,
     MatCardModule,
 
+    // Neue modulare Firebase-Initialisierung:
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
   ],
   providers: [],
