@@ -9,11 +9,14 @@ html,
 body {
   height: 100%;
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   display: flex;
   margin: 0;
   font-family: Roboto, sans-serif;
+  overflow-y: hidden;
 }
-
-
-
