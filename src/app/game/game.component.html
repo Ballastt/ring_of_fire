@@ -24,7 +24,7 @@
     />
 
     <!-- Stack for played cards -->
-    <ng-container *ngIf="!pickCardAnimation">
+    <ng-container *ngIf="!game.pickCardAnimation">
       <img
         *ngFor="let card of game.playedCards"
         class="played-card"
@@ -36,17 +36,17 @@
     <!--Current card plus animation-->
     <img
       (click)="pickCard()"
-      *ngIf="pickCardAnimation && currentCard"
+      *ngIf="game.pickCardAnimation && game.currentCard"
       class="pick-card"
       style="right: 25px"
-      src="assets/img/cards/{{ currentCard }}.png"
+      src="assets/img/cards/{{ game.currentCard }}.png"
       alt="card cover"
     />
   </div>
 </div>
 
 <app-game-description
-  [card]="currentCard"
+  [card]="game.currentCard"
   class="pin-bottom"
 ></app-game-description>
 
