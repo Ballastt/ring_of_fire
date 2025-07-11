@@ -2,9 +2,18 @@ import { Component } from '@angular/core';
 import { Game } from 'src/models/game';
 import { MatDialog } from '@angular/material/dialog';
 import { MyDialogComponent } from '../my-dialog/my-dialog.component';
-import { Firestore, collectionData, collection, addDoc, Query } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router'; 
+import { doc, docData } from '@angular/fire/firestore';
 
+import {
+  Firestore,
+  collection,
+  collectionData,
+  addDoc,
+} from '@angular/fire/firestore';
+
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-game',
@@ -18,32 +27,28 @@ export class GameComponent {
 
   games$!: Observable<any[]>;
 
-  constructor(private firestore: Firestore, public dialog: MatDialog) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private firestore: Firestore,
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit() {
-    console.log('Firestore instance:', this.firestore);
-    console.log('ngOnInit wurde aufgerufen');
+    this.route.params.subscribe((params) => {
+      const gameId = params['id'];
 
-    const gamesRef = collection(this.firestore, 'games');
-    this.games$ = collectionData(gamesRef, { idField: 'id' });
-
-    this.games$.subscribe((games) => {
-      console.log('Spiele aus Firestore:', games); // ✅ Wird jetzt ausgeführt
+      if (gameId) {
+        const gameDocRef = doc(this.firestore, 'games', gameId);
+        docData(gameDocRef).subscribe((gameData: any) => {
+          this.game = new Game();
+          Object.assign(this.game, gameData);
+          console.log('Live aktualisiertes Spiel:', this.game);
+        });
+      }
     });
   }
 
-  newGame() {
-    this.game = new Game();
-    const gameData = JSON.parse(JSON.stringify(this.game)); // wandelt in Plain Object um
-
-    addDoc(collection(this.firestore, 'games'), gameData)
-      .then((docRef) => {
-        console.log('Game erfolgreich gespeichert mit ID:', docRef.id);
-      })
-      .catch((error) => {
-        console.error('Fehler beim Speichern des Spiels:', error);
-      });
-  }
 
   pickCard() {
     if (!this.pickCardAnimation) {
@@ -70,7 +75,6 @@ export class GameComponent {
       if (name && name.length > 0) {
         this.game.players.push(name);
         console.log('Dialog wurde geschlossen mit:', name);
-        // Hier kannst du was mit "result" machen
       }
     });
   }
