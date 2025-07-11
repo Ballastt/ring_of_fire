@@ -58,18 +58,13 @@ export class GameDescriptionComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
 
   ngOnChanges(): void {
-    console.log('Current card:', this.card);
     if (this.card) {
       const parts = this.card.split('_');
       const cardNumber = +parts[1];
-      console.log('Card number:' + cardNumber);
-
       const action = this.cardAction[cardNumber -1];
       if (action) {
         this.title = action.title;
         this.description = action.description;
-        console.log('Title is:', this.title);
-        console.log('Rule is:', this.description);
       }
     }
   }
