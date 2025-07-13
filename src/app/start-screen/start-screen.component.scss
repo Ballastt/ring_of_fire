@@ -1,33 +1,61 @@
 .start-screen {
-    background-color:#1c5e13;
-    width: 100vw;
-    height: 100vh;
-    max-width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  background-color: #1c5e13;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+
+  @media screen and (max-width: 900px) {
     overflow: hidden;
 
-    >img {
-        height: 107vh;
+  }
+
+  > img {
+    height: 107vh;
+
+    @media screen and (max-width: 500px) {
+      height: 50%;
+      width: 100%;
     }
+
+    @media screen and (max-width: 720px) {
+      height: 70vh;
+      width: 100%;
+    }
+  }
 }
 
 .start-label-box {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 150px;
-    display: flex;
-    justify-content: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 150px;
+  display: flex;
+  justify-content: center;
 
-    img {
-        width: 500px;
-        height: auto;
+  @media screen and (max-width: 720px) {
+    bottom: 270px;
+  }
 
-        &:hover {
-            filter: brightness(1.25);
-            cursor: pointer;
-        }
+  img {
+    width: 500px;
+    height: auto;
+
+    @media screen and (max-width: 960px) {
+      width: 300px;
     }
+
+    @media screen and (max-width: 520px) {
+      width: 180px;
+      
+    }
+
+    &:hover {
+      filter: brightness(1.25);
+      cursor: pointer;
+    }
+  }
 }
