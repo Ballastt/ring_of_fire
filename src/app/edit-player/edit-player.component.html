@@ -1,0 +1,8 @@
+<img
+  *ngFor="let picture of allProfilePictures"
+  src="../../assets/img/avatar/{{ picture }}"
+  [alt]="picture"
+  class="profile-picture"
+  alt="Profile Picture"
+  [mat-dialog-close]="picture"
+/>
