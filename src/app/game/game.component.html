@@ -1,10 +1,21 @@
 <app-player
+  (click)="editPlayer(i)"
   *ngFor="let player of game.players; let i = index"
   [ngStyle]="{ 'top.px': 100 + i * 90 }"
   [name]="player"
   [playerActive]="i == game.currentPlayer"
-  class="player-position"
+  class="player-position hide-mobile"
 ></app-player>
+
+<div class="scroll-container">
+  <app-player-mobile
+    (click)="editPlayer(i)"
+    *ngFor="let player of game.players; let i = index"
+    [name]="player"
+    [playerActive]="i == game.currentPlayer"
+    class="hide-desktop"
+  ></app-player-mobile>
+</div>
 
 <div class="gameSpace">
   <div class="card-stack">
@@ -35,7 +46,6 @@
 
     <!--Current card plus animation-->
     <img
-      (click)="pickCard()"
       *ngIf="game.pickCardAnimation && game.currentCard"
       class="pick-card"
       style="right: 25px"
