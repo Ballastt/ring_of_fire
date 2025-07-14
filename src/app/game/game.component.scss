@@ -110,10 +110,29 @@
   }
 }
 
-app-player, app-player-mobile {
+app-player,
+app-player-mobile {
   cursor: pointer;
 
   &:hover {
-    filter: brightness(1.2);
+    filter: brightness(1.05);
   }
+}
+
+.game-over {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+
+  > img {
+    width: 500px;
+    height: auto;
+  }
+}
+
+.preload-images {
+  opacity: 0;
+  z-index: -999;
 }
