@@ -31,6 +31,10 @@ body {
   --mdc-dialog-container-color: #7b1fa2;
 }
 
+.mat-typography h2 {
+  margin: 0;
+}
+
 
 @media screen and (max-width: 720px) {
   .hide-mobile {
