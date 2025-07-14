@@ -5,7 +5,6 @@ import { MyDialogComponent } from '../my-dialog/my-dialog.component';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { doc, docData, updateDoc, Firestore } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
 import { EditPlayerComponent } from '../edit-player/edit-player.component';
 
 @Component({
@@ -15,9 +14,9 @@ import { EditPlayerComponent } from '../edit-player/edit-player.component';
 })
 export class GameComponent implements OnInit {
   game: Game = new Game();
+  preloadImages: string[] = [];
   gameId: string | undefined = '';
-
-  games$!: Observable<any[]>;
+  gameOver: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -27,62 +26,94 @@ export class GameComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.preloadImages = this.generateAllCardPaths();
+
     this.route.params.subscribe((params) => {
       this.gameId = params['id'];
-      console.log('Spiel-ID aus der URL:', this.gameId);
       if (this.gameId) {
         const gameDocRef = doc(this.firestore, 'games', this.gameId);
         docData(gameDocRef).subscribe((gameData: any) => {
           this.game = new Game();
           Object.assign(this.game, gameData);
-          // Absicherung: aktuelle Werte prüfen und korrekt zuweisen
-          this.game.currentPlayer = Number(this.game.currentPlayer) || 0;
-          this.game.pickCardAnimation = !!this.game.pickCardAnimation;
-          this.game.currentCard = this.game.currentCard || '';
-          this.game.players = this.game.players || [];
-          this.game.stack = this.game.stack || [];
-          this.game.playedCards = this.game.playedCards || [];
-          this.game.playerImages = this.game.playerImages || [];
-          console.log('Aktuelles Spiel geladen:', this.game);
+          this.fixGameData();
         });
       }
     });
   }
 
-  pickCard() {
-    console.log('[KLICK] pickCard() aufgerufen');
-    if (!this.game.pickCardAnimation) {
-      console.log('[OK] Animation nicht aktiv → Karte ziehen');
+  fixGameData() {
+    this.game.currentPlayer = +this.game.currentPlayer || 0;
+    this.game.pickCardAnimation = !!this.game.pickCardAnimation;
+    this.game.currentCard = this.game.currentCard || '';
+    this.game.players = this.game.players ?? [];
+    this.game.stack = this.game.stack ?? [];
+    this.game.playedCards = this.game.playedCards ?? [];
+    this.game.playerImages = this.game.playerImages ?? [];
+  }
 
-      this.game.currentCard = this.game.stack.pop() || '';
-      this.game.pickCardAnimation = true;
+  generateAllCardPaths(): string[] {
+    const suits = ['spade', 'hearts', 'diamonds', 'clubs'];
+    const paths: string[] = [];
 
-      this.game.currentPlayer++;
-      this.game.currentPlayer %= this.game.players.length;
-
-      setTimeout(() => {
-        if (this.game.currentCard) {
-          this.game.playedCards.push(this.game.currentCard);
-        }
-
-        this.game.pickCardAnimation = false;
-        this.game.currentCard = ''; // <- HIER setzen, nachdem sie ins Array ging
-
-        this.saveGame();
-        console.log('[ANIMATION ENDE] Karte gelegt & gespeichert');
-      }, 2000);
-    } else {
-      console.log('[BLOCKIERT] Animation läuft noch – kein Ziehen möglich');
+    for (let suit of suits) {
+      for (let i = 1; i <= 13; i++) {
+        paths.push(`assets/img/cards/${suit}_${i}.png`);
+      }
     }
+
+    return paths;
+  }
+
+  pickCard() {
+    if (this.isStackEmpty()) {
+      this.gameOver = true;
+      return;
+    }
+
+    if (this.game.pickCardAnimation) {
+      return;
+    }
+
+    this.startCardPick();
+  }
+
+  private isStackEmpty(): boolean {
+    return this.game.stack.length === 0;
+  }
+
+  private startCardPick() {
+    this.gameOver = false;
+    this.game.currentCard = this.game.stack.pop() || '';
+    this.game.pickCardAnimation = true;
+    this.advancePlayer();
+
+    setTimeout(() => this.finishCardPick(), 2000);
+  }
+
+  private advancePlayer() {
+    this.game.currentPlayer =
+      (this.game.currentPlayer + 1) % this.game.players.length;
+  }
+
+  private finishCardPick() {
+    if (this.game.currentCard) {
+      this.game.playedCards.push(this.game.currentCard);
+    }
+    this.game.pickCardAnimation = false;
+    this.game.currentCard = '';
+    this.saveGame();
   }
 
   openDialog(): void {
+    (document.activeElement as HTMLElement)?.blur();
     const dialogRef = this.dialog.open(MyDialogComponent);
 
     dialogRef.afterClosed().subscribe((name: string) => {
       if (name && name.length > 0) {
         this.game.players.push(name);
-        console.log('Dialog wurde geschlossen mit:', name);
+        this.game.playerImages.push('female_avatar.png');
+        const btn = document.querySelector('.add-btn') as HTMLButtonElement;
+        btn?.focus();
         this.saveGame();
       }
     });
@@ -90,23 +121,21 @@ export class GameComponent implements OnInit {
 
   saveGame() {
     const gameRef = doc(this.firestore, 'games', this.gameId || '');
-    updateDoc(gameRef, this.game.toJson())
-      .then(() => {
-        console.log('Spiel aktualisiert:', this.game);
-        // Optional: Navigiere zurück zur Startseite oder führe eine andere Aktion aus
-      })
-      .catch((error) => {
-        console.error('Fehler beim Aktualisieren des Spiels:', error);
-      });
+    updateDoc(gameRef, this.game.toJson());
   }
 
   editPlayer(playerId: number) {
-    console.log('[KLICK] editPlayer() aufgerufen', playerId);
-
     const dialogRef = this.dialog.open(EditPlayerComponent);
-    dialogRef.afterClosed().subscribe((change: string) => {
-      console.log("Received Change", change);
-      
+    dialogRef.afterClosed().subscribe((change: string | undefined) => {
+      if (change) {
+        if (change === 'DELETE') {
+          this.game.players.splice(playerId, 1);
+          this.game.playerImages.splice(playerId, 1);
+        } else {
+          this.game.playerImages[playerId] = change;
+        }
+        this.saveGame();
+      }
     });
   }
 }
